@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
 		return -1;
 	}
 	
-	bool bMore=Process32First(hProcess,&currentProcess);	//获取第一个进程信息
+	BOOL bMore=Process32First(hProcess,&currentProcess);	//获取第一个进程信息
 	while(bMore)
 	{
 		wcout << "PID=  " << currentProcess.th32ProcessID << "  PName= " << currentProcess.szExeFile << endl;	//遍历进程快照，轮流显示每个进程信息
@@ -47,7 +47,7 @@ int main(int argc, char const *argv[])
 		if (releaseNTSD())
 		{
 			char pid[10];
-			_itoa(progressID, pid, 10);
+			_itoa_s(progressID, pid, 10);
 			char head[25] = "ntsd -c q -p ";
 			strcat_s(head, sizeof(head), pid);
 			int i = system(head);
@@ -59,6 +59,11 @@ int main(int argc, char const *argv[])
 			else
 			{
 				cout << "程序调用错误" << endl;
+				system("pause");
+			}
+			//程序调用完成，移除依赖文件
+			if (remove("ntsd.exe") == EOF) {
+				cout << "依赖文件错误" << endl;
 				system("pause");
 			}
 		}
